@@ -63,9 +63,20 @@ RateLimiter.prototype = {
       return;
    },
    /**
-    * Checks rate limit tokens in redis.
-    * If there are more than allowed, recursively calls itself after timeout.
-    * If there are less than allowed, sets a rate limit token and executes callback.
+    * Checks rate limit tokens in redis:
+    * 1) Run a LUA script with the userID being the key
+    * 2) Check if the incremented count at the userID is greater than the limit
+    *    a) If it is greater than the limit, return the current count
+    *    b) If it is not greater than the limit, just return 0
+    * 3) Check if we are below the limit
+    *    a) If below the limit, then call the callback immediately
+    *    b) If not below the limit, then call the callback in a setTimeOut for the next interval
+    *
+    * The wonderful thing about using LUA is that it is single threaded and gets executed
+    * in Redis. This allows for an atomic reading the key and then incrementing the key.
+    * If we were to do the same logic in NodeJS we would easily run into race conditions
+    * where we could asynchronously INC and GET the keys out of order. This would create
+    * a condition where we would step over our limit for the rate limiter.
     * @param {String} userID
     * @param {Function} callback
     */
