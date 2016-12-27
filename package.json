@@ -1,0 +1,34 @@
+{
+  "name": "scalable-rate-limiter",
+  "version": "1.0.0",
+  "description": "A rate limiter that uses redis to horizontally scale across servers. It allows a user to set the number of tokens per user per timeframe. What seperates this package from the rest is it race-condition safe since it uses a LUA redis script to GET and INC tokens in Redis",
+  "main": "ratelimiter.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/metricstory/scalable-rate-limiter.git"
+  },
+  "keywords": [
+    "ratelimiter",
+    "rate",
+    "rate",
+    "limiting",
+    "rate",
+    "limiting",
+    "api",
+    "throttle",
+    "apithrottle",
+    "googleanalytics",
+    "analytics",
+    "google",
+    "twitterapi"
+  ],
+  "author": "will@metricstory.com & brandon@metricstory.com",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/metricstory/scalable-rate-limiter/issues"
+  },
+  "homepage": "https://github.com/metricstory/scalable-rate-limiter#readme"
+}
