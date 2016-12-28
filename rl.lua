@@ -1,9 +1,21 @@
-local key = KEYS[1]
+local secondsKey = KEYS[1]
+local dailyKey = KEYS[2]
 local duration = ARGV[1]
-local limit = ARGV[2]
-local count = redis.call('INCR', key)
-if tonumber(count) > tonumber(limit) then
-  return count
+local secondsLimit = tonumber(ARGV[2])
+local dailyLimit = tonumber(ARGV[3])
+local dailyTTL = tonumber(ARGV[4])
+local tonumber(secondsCount) = redis.call('INCR', secondsKey)
+if secondsCount > secondsLimit then
+  return secondsCount
 end
-redis.call('EXPIRE', key, duration)
+redis.call('EXPIRE', secondsKey, duration)
+
+if dailyLimit > 0 then
+  local tonumber(dailyCount) = redis.call('INCR', dialyKey)
+  redis.call('EXPIRE', dailyKey, dailyTTL)
+  if dailyCount > dailyLimit then
+    return -1
+  end
+end
+
 return 0

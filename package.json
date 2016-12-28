@@ -32,6 +32,8 @@
   },
   "homepage": "https://github.com/metricstory/scalable-rate-limiter#readme",
   "dependencies": {
-    "fs": "0.0.1-security"
+    "fs": "0.0.1-security",
+    "moment": "^2.17.1",
+    "moment-timezone": "^0.5.11"
   }
 }

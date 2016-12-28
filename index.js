@@ -1,25 +1,7 @@
-"use strict";
-
-/*
-*
-* MIT License
-*
-* Copyright 2017 will@metricstory.com, brandon@metricstory.com
-*
-* Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"),
-* to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense,
-* and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-*
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*
-* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
-* OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-* LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR
-* IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-*
-*/
+'use strict';
 
 const fs = require('fs');
+const moment = require('moment-timezone');
 const luaScript = fs.readFileSync('rl.lua', 'utf-8');
 
 /**
@@ -27,18 +9,27 @@ const luaScript = fs.readFileSync('rl.lua', 'utf-8');
  * to send the API requests. If we do not, then set a timeout and wait for the next (intervalThreshold) to send the request
  * @param {Object} redis The preconfigured redis connection
  * @param {Boolean} enableLogging Set this to enable logging
- * @param {Integer} allowedTokensPerInterval The number of allowed tokens a user can use (API requests) in time period
+ * @param {Integer} allowedReqsPerInterval The number of allowed tokens a user can use (API requests) in time period
  * @param {Integer} intervalThreshold The interval threshold to wait before
  * @param {String}  rateLimiterNameSpace redis namespace of the rate limiter: default: '.rate.limiter'
+ * @param {Integer} allowedReqsPerDay The number of allowed requests a user can make in one day
+ * @param {Integer} dailyTTL How long to store daily quota usage in redis
+ * @param {Sttring} timezone Timezone for daily tally
  *
 */
 
-var RateLimiter = function (redis, enableLogging = false, allowedTokensPerInterval = 10, intervalThreshold = 1,
-                            rateLimiterNameSpace = '.rate.limiter') {
+var RateLimiter = function (redis,
+  enableLogging = false,
+  allowedReqsPerInterval = 10,
+  intervalThreshold = 1,
+  rateLimiterNameSpace = '.rate.limiter',
+  allowedReqsPerDay = 0,
+  dailyTTL = 60 * 60 * 24 * 31, // roughly a month
+  timezone = 'America/Los_Angeles') {
   // Redis connection that is setup correctly
   this.redis = redis;
   // This is the number of tokens allowed per interval: ex: 10 tokens per interval
-  this.allowedTokensPerInterval = allowedTokensPerInterval;
+  this.allowedReqsPerInterval = allowedReqsPerInterval;
   // This is the interval Threshold length. ex: 1 sec. Redis uses units of seconds
   this.intervalThreshold = intervalThreshold;
   // Convert this into units MS (JS uses MS) Ex: 1000
@@ -47,6 +38,12 @@ var RateLimiter = function (redis, enableLogging = false, allowedTokensPerInterv
   this.rateLimiterNameSpace = rateLimiterNameSpace;
   // Enable logging for this library
   this.enableLogging = enableLogging;
+  // Number of requests allowed in one day (reset at midnight in provided or default timezone)
+  this.allowedReqsPerDay = allowedReqsPerDay;
+  // How long to store quota usage in redis
+  this.dailyTTL = dailyTTL
+  // Timezone for daily tally
+  this.timezone = timezone;
 };
 
 RateLimiter.prototype = {
@@ -73,10 +70,13 @@ RateLimiter.prototype = {
     * @param {Function} callback
     */
     rateLimit: function(userID, callback) {
-      this.redis.eval(luaScript, 1, userID + this.rateLimiterNameSpace, this.intervalThreshold, this.allowedTokensPerInterval, (e, o) => {
+      const today = moment().tz(this.timezone).format('YYYY-MM-DD');
+      const secondsKey = userID + this.rateLimiterNameSpace + '.seconds';
+      const dailyKey = userID + this.rateLimiterNameSpace + '.daily.' + today;
+      this.redis.eval(luaScript, 2, secondsKey, dailyKey, this.intervalThreshold, this.allowedReqsPerInterval, this.allowedReqsPerDay, this.dailyTTL, (e, o) => {
         if(e){
           if(this.enableLogging){
-            console.log("Lua error in Rate Limiter: ", e);
+            console.log('Lua error in Rate Limiter: ', e);
           }
         }
         else if (o > this.intervalThreshold) {
