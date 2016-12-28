@@ -71,7 +71,8 @@ Wish list:
 
 ## Authors
 
-* [willyschu](https://github.com/willyschu)  [nutterbrand](https://github.com/nutterbrand)
+* [willyschu](https://github.com/willyschu)
+* [nutterbrand](https://github.com/nutterbrand)
 
 ## License
 
