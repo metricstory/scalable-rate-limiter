@@ -1,6 +1,6 @@
 # Scalable Rate Limiter
 
-A professional quality rate limiter that horizontally scales horizontally with Redis and eliminates race conditions
+A professional quality rate limiter that horizontally scales with Redis and eliminates race conditions
 
 ### Prerequisites
 
