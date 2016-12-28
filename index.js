@@ -35,24 +35,24 @@ const luaScript = fs.readFileSync('rl.lua', 'utf-8');
 
 var RateLimiter = function (redis, enableLogging = false, allowedTokensPerInterval = 10, intervalThreshold = 1,
                             rateLimiterNameSpace = '.rate.limiter') {
-   // Redis connection that is setup correctly
-   this.redis = redis;
-   // This is the number of tokens allowed per interval: ex: 10 tokens per interval
-   this.allowedTokensPerInterval = allowedTokensPerInterval;
-   // This is the interval Threshold length. ex: 1 sec. Redis uses units of seconds
-   this.intervalThreshold = intervalThreshold;
-   // Convert this into units MS (JS uses MS) Ex: 1000
-   this.intervalThresholdMS = intervalThreshold * 1000;
-   // Namespace for the rate limiter. ex: '.<company-name>.rate.limiter'
-   this.rateLimiterNameSpace = rateLimiterNameSpace;
-   // Enable logging for this library
-   this.enableLogging = enableLogging;
+  // Redis connection that is setup correctly
+  this.redis = redis;
+  // This is the number of tokens allowed per interval: ex: 10 tokens per interval
+  this.allowedTokensPerInterval = allowedTokensPerInterval;
+  // This is the interval Threshold length. ex: 1 sec. Redis uses units of seconds
+  this.intervalThreshold = intervalThreshold;
+  // Convert this into units MS (JS uses MS) Ex: 1000
+  this.intervalThresholdMS = intervalThreshold * 1000;
+  // Namespace for the rate limiter. ex: '.<company-name>.rate.limiter'
+  this.rateLimiterNameSpace = rateLimiterNameSpace;
+  // Enable logging for this library
+  this.enableLogging = enableLogging;
 };
 
 RateLimiter.prototype = {
-   rateLimitFunction: function (userID, callback) {
-      this.rateLimit(userID, callback);
-      return;
+  rateLimitFunction: function (userID, callback) {
+    this.rateLimit(userID, callback);
+    return;
    },
    /**
     * Checks rate limit tokens in redis:
