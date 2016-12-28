@@ -2,7 +2,7 @@
 
 const fs = require('fs');
 const moment = require('moment-timezone');
-const luaScript = fs.readFileSync('rl.lua', 'utf-8');
+const luaScript = fs.readFileSync(__dirname + '/rl.lua', 'utf-8');
 
 /**
  * This class uses a LUA script to set a count at each key (userId) to see if we have enough tokens (allowedTokensPerInterval)
