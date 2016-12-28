@@ -27,13 +27,10 @@ To instanciate the rate limiter and call it for API requests
 * @param {Integer} allowedTokensPerInterval The number of allowed tokens a user can use (API requests) in time period
 * @param {Integer} intervalThreshold The interval threshold to wait before
 * @param {String}  rateLimiterNameSpace redis namespace of the rate limiter: default: '.rate.limiter'
-* @param {Boolean} enableDailyQuota Stop the API requests if we hit the DailyQuota Limit
-* @param {Integer} dailyLimit The daily limit per user for requests: ex: 5000
-* @param {Integer} globalDailyLimit The number of global requests the system can have daily: ex: 40,000
 */
 let redis = require("redis"),
     redisClient = redis.createClient(),
-    limiter = new RateLimiter(redisClient, false, 5, 3, '.rate.limiter', false, 5000, 40000);
+    limiter = new RateLimiter(redisClient, false, 5, 3, '.rate.limiter');
 ```
 
 To use the rate limiter:
@@ -69,7 +66,7 @@ under this license.
 Wish list:
 
 ```
-1) Implement enableDailyQuota
+1) Implement daily API quota check for a user
 2) Add tests to the rate limiter
 3) Allow the rate limiter to have multiple limits or thresholds
 ```
