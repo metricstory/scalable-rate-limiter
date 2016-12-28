@@ -4,21 +4,25 @@ A professional quality rate limiter that horizontally scales horizontally with R
 
 ### Prerequisites
 
-Redis needs to be required in and setup to use the correct host and credentials. Please
-see below on how Redis is being passed in to the constructor.
+Redis needs to be required in and setup to use the correct host and credentials.
+https://www.npmjs.com/package/redis
+
+```
+npm install redis
+```
 
 ### Installing
 
 To install the library from NPM:
 
 ```
-npm install scalable-rate-limiter --save
+npm install scalable-rate-limiter
 ```
 
 To instanciate the rate limiter and call it for API requests
 ```
 /*
-* @param {Object} redis The preconfigured redis connection (https://www.npmjs.com/package/redis)
+* @param {Object} redisClient The preconfigured redis connection (https://www.npmjs.com/package/redis)
 * @param {Boolean} enableLogging Set this to enable logging
 * @param {Integer} allowedTokensPerInterval The number of allowed tokens a user can use (API requests) in time period
 * @param {Integer} intervalThreshold The interval threshold to wait before
@@ -27,7 +31,9 @@ To instanciate the rate limiter and call it for API requests
 * @param {Integer} dailyLimit The daily limit per user for requests: ex: 5000
 * @param {Integer} globalDailyLimit The number of global requests the system can have daily: ex: 40,000
 */
-let limiter = new RateLimiter(redis, false, 5, 3, '.rate.limiter', false, 5000, 40000);
+let redis = require("redis"),
+    redisClient = redis.createClient(),
+    limiter = new RateLimiter(redisClient, false, 5, 3, '.rate.limiter', false, 5000, 40000);
 ```
 
 To use the rate limiter:
@@ -36,6 +42,7 @@ To use the rate limiter:
 limiter.rateLimitFunction(userID, (limited) => {
   if(!limited){
     // Make API call request for the user here
+    apiCall()
   }
 })
 ```
