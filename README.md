@@ -20,7 +20,7 @@ npm install scalable-rate-limiter
 ```
 
 To instanciate the rate limiter and call it for API requests
-```
+```javascript
 /*
 * @param {Object} redisClient The preconfigured redis connection (https://www.npmjs.com/package/redis)
 * @param {Boolean} enableLogging Set this to enable logging
@@ -34,7 +34,7 @@ let redis = require("redis"),
 ```
 
 To use the rate limiter:
-```
+```javascript
 // To call the rate limiter on a userID for API requests
 limiter.rateLimitFunction(userID, (limited) => {
   if(!limited){
@@ -43,8 +43,6 @@ limiter.rateLimitFunction(userID, (limited) => {
   }
 })
 ```
-
-End with an example of getting some data out of the system or using it for a little demo
 
 ## Running the tests
 
