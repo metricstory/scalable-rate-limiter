@@ -17,18 +17,21 @@ npm install scalable-rate-limiter --save
 
 To instanciate the rate limiter and call it for API requests
 ```
-// To initial the rate limiter when the app initializes:
-// Argument 1: redis -- The configured redis client for node (ex: var redis = require("redis") )
-// false: Do not enable logging
-// 5: Five tokens allowed for a user in an interval
-// 3: The length of the interval in seconds
-// '.rate.limiter': The namespace the limiter will use in redis. Ex: userID.rate.limiter
-// false: Disable the check for stopping API requests once the daily quota is reached
-// 5000: The daily API limit for a userID
-// 40000: The global daily limit for every user
+/*
+* @param {Object} redis The preconfigured redis connection (https://www.npmjs.com/package/redis)
+* @param {Boolean} enableLogging Set this to enable logging
+* @param {Integer} allowedTokensPerInterval The number of allowed tokens a user can use (API requests) in time period
+* @param {Integer} intervalThreshold The interval threshold to wait before
+* @param {String}  rateLimiterNameSpace redis namespace of the rate limiter: default: '.rate.limiter'
+* @param {Boolean} enableDailyQuota Stop the API requests if we hit the DailyQuota Limit
+* @param {Integer} dailyLimit The daily limit per user for requests: ex: 5000
+* @param {Integer} globalDailyLimit The number of global requests the system can have daily: ex: 50,000
+*/
 let limiter = new RateLimiter(redis, false, 5, 3, '.rate.limiter', false, 5000, 40000);
+```
 
-
+To use the rate limiter:
+```
 // To call the rate limiter on a userID for API requests
 limiter.rateLimitFunction(userID, (limited) => {
   if(!limited){
@@ -55,6 +58,14 @@ Please add test examples here
 
 This is licensed under MIT. Please feel free to make pull requests for main features
 under this license.
+
+Wish list:
+
+```
+1) Implement enableDailyQuota
+2) Add tests to the rate limiter
+3) Allow the rate limiter to have multiple limits or thresholds
+```
 
 ## Authors
 

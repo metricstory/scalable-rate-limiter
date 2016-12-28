@@ -30,7 +30,6 @@
  * @param {Boolean} enableDailyQuota Stop the API requests if we hit the DailyQuota Limit
  * @param {Integer} dailyLimit The daily limit per user for requests: ex: 5000
  * @param {Integer} globalDailyLimit The number of global requests the system can have daily: ex: 50,000
- * @param {Boolean} enableLogging Turn logging off or on
  *
  */
 
