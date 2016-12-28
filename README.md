@@ -1,4 +1,4 @@
-# Project Title
+# Scalable Rate Limiter
 
 A professional quality rate limiter that horizontally scales horizontally with Redis and eliminates race conditions
 
@@ -25,7 +25,7 @@ To instanciate the rate limiter and call it for API requests
 * @param {String}  rateLimiterNameSpace redis namespace of the rate limiter: default: '.rate.limiter'
 * @param {Boolean} enableDailyQuota Stop the API requests if we hit the DailyQuota Limit
 * @param {Integer} dailyLimit The daily limit per user for requests: ex: 5000
-* @param {Integer} globalDailyLimit The number of global requests the system can have daily: ex: 50,000
+* @param {Integer} globalDailyLimit The number of global requests the system can have daily: ex: 40,000
 */
 let limiter = new RateLimiter(redis, false, 5, 3, '.rate.limiter', false, 5000, 40000);
 ```
@@ -70,8 +70,6 @@ Wish list:
 ## Authors
 
 * [willyschu](https://github.com/willyschu)  [nutterbrand](https://github.com/nutterbrand)
-
-See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
 
 ## License
 
