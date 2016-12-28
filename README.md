@@ -19,7 +19,7 @@ To install the library from NPM:
 npm install scalable-rate-limiter
 ```
 
-To instanciate the rate limiter and call it for API requests
+To instantiate the rate limiter and call it for API requests
 ```javascript
 /*
 * @param {Object} redisClient The preconfigured redis connection (https://www.npmjs.com/package/redis)
