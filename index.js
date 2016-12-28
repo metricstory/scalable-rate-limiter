@@ -19,6 +19,9 @@
 *
 */
 
+const fs = require('fs');
+const luaScript = fs.readFileSync('rl.lua', 'utf-8');
+
 /**
  * This class uses a LUA script to set a count at each key (userId) to see if we have enough tokens (allowedTokensPerInterval)
  * to send the API requests. If we do not, then set a timeout and wait for the next (intervalThreshold) to send the request
@@ -28,7 +31,7 @@
  * @param {Integer} intervalThreshold The interval threshold to wait before
  * @param {String}  rateLimiterNameSpace redis namespace of the rate limiter: default: '.rate.limiter'
  *
- */
+*/
 
 var RateLimiter = function (redis, enableLogging = false, allowedTokensPerInterval = 10, intervalThreshold = 1,
                             rateLimiterNameSpace = '.rate.limiter') {
@@ -70,15 +73,6 @@ RateLimiter.prototype = {
     * @param {Function} callback
     */
     rateLimit: function(userID, callback) {
-      const luaScript = `local key = KEYS[1]
-      local duration = ARGV[1]
-      local limit = ARGV[2]
-      local count = redis.call('INCR', key)
-      if tonumber(count) > tonumber(limit) then
-        return count
-      end
-      redis.call('EXPIRE', key, duration)
-      return 0`
       this.redis.eval(luaScript, 1, userID + this.rateLimiterNameSpace, this.intervalThreshold, this.allowedTokensPerInterval, (e, o) => {
         if(e){
           if(this.enableLogging){
