@@ -28,7 +28,12 @@ describe('RateLimiter', () => {
     })
 
     it('will ratelimit for at least enough time', done => {
-      const callback = (limited) => {
+      const firstCallback = (limited) => {
+        const after = Date.now();
+        expect(limited).to.equal(false);
+        expect(after-before).to.be.below(1000)
+      }
+      const secondCallback = (limited) => {
         const after = Date.now();
         expect(limited).to.equal(false);
         expect(after-before).to.be.above(1000)
@@ -37,9 +42,9 @@ describe('RateLimiter', () => {
       }
       const before = Date.now();
       for (var i = 0; i < 10; i++) {
-        rl.rateLimitFunction('test1', o => {return o});
+        rl.rateLimitFunction('test1', firstCallback);
       }
-      rl.rateLimitFunction('test1', callback);
+      rl.rateLimitFunction('test1', secondCallback);
     })
   })
 
@@ -52,7 +57,12 @@ describe('RateLimiter', () => {
     })
 
     it('will ratelimit for at least enough time', done => {
-      const callback = (limited) => {
+      const firstCallback = (limited) => {
+        const after = Date.now();
+        expect(limited).to.equal(false);
+        expect(after-before).to.be.below(1000)
+      }
+      const secondCallback = (limited) => {
         const after = Date.now();
         expect(limited).to.equal(false);
         expect(after-before).to.be.above(1000);
@@ -61,9 +71,9 @@ describe('RateLimiter', () => {
       }
       const before = Date.now();
       for (var i = 0; i < 5; i++) {
-        rl.rateLimitFunction('test2', o => {return o});
+        rl.rateLimitFunction('test2', firstCallback);
       }
-      rl.rateLimitFunction('test2', callback);
+      rl.rateLimitFunction('test2', secondCallback);
     })
 
     it('will return true when over daily limit', done => {
