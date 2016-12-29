@@ -68,6 +68,7 @@ Wish list:
 
 ```
 1) Allow the rate limiter to have multiple limits or thresholds
+2) Use options object to simulate named parameters
 ```
 
 ## Authors
