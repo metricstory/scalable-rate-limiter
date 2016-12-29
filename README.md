@@ -47,18 +47,6 @@ limiter.rateLimitFunction(userID, (limited) => {
 })
 ```
 
-## Running the tests
-
-We need to add tests!
-
-### Break down into end to end tests
-
-We need to add tests
-
-```
-Please add test examples here
-```
-
 ## Contributing
 
 This is licensed under MIT. Please feel free to make pull requests for main features
