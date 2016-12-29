@@ -22,11 +22,14 @@ npm install scalable-rate-limiter
 To instantiate the rate limiter and call it for API requests
 ```javascript
 /*
-* @param {Object} redisClient The preconfigured redis connection (https://www.npmjs.com/package/redis)
+* @param {Object} redis The preconfigured redis connection
 * @param {Boolean} enableLogging Set this to enable logging
-* @param {Integer} allowedTokensPerInterval The number of allowed tokens a user can use (API requests) in time period
+* @param {Integer} allowedReqsPerInterval The number of allowed tokens a user can use (API requests) in time period
 * @param {Integer} intervalThreshold The interval threshold to wait before
 * @param {String}  rateLimiterNameSpace redis namespace of the rate limiter: default: '.rate.limiter'
+* @param {Integer} allowedReqsPerDay The number of allowed requests a user can make in one day
+* @param {Integer} dailyTTL How long to store daily quota usage in redis
+* @param {Sttring} timezone Timezone for daily tally
 */
 let redis = require("redis"),
     redisClient = redis.createClient(),
@@ -64,9 +67,7 @@ under this license.
 Wish list:
 
 ```
-1) Implement daily API quota check for a user
-2) Add tests to the rate limiter
-3) Allow the rate limiter to have multiple limits or thresholds
+1) Allow the rate limiter to have multiple limits or thresholds
 ```
 
 ## Authors
