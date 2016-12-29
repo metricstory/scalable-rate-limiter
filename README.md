@@ -1,5 +1,5 @@
 # Scalable Rate Limiter
-===================================
+
 [![Build Status](https://travis-ci.org/metricstory/scalable-rate-limiter.svg?branch=master)](https://travis-ci.org/metricstory/scalable-rate-limiter)
 
 A professional quality rate limiter that horizontally scales with Redis and eliminates race conditions
