@@ -14,7 +14,7 @@ const luaScript = fs.readFileSync(__dirname + '/rl.lua', 'utf-8');
  * @param {String}  rateLimiterNameSpace redis namespace of the rate limiter: default: '.rate.limiter'
  * @param {Integer} allowedReqsPerDay The number of allowed requests a user can make in one day
  * @param {Integer} dailyTTL How long to store daily quota usage in redis
- * @param {Sttring} timezone Timezone for daily tally
+ * @param {String} timezone Timezone for daily tally
  *
 */
 
