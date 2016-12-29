@@ -1,6 +1,6 @@
 {
   "name": "scalable-rate-limiter",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "A rate limiter that uses redis to horizontally scale across servers. It allows a user to set the number of tokens per user per timeframe. What separates this package from the rest is it is race-condition safe since it uses a LUA script for atomic funcs",
   "main": "index.js",
   "scripts": {
