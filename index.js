@@ -1,5 +1,3 @@
-'use strict';
-
 const fs = require('fs');
 const moment = require('moment-timezone');
 const luaScript = fs.readFileSync(__dirname + '/rl.lua', 'utf-8');
@@ -48,8 +46,7 @@ class RateLimiter {
     };
 
   rateLimitFunction(userID, callback) {
-    this.rateLimit(userID, callback);
-    return;
+    return this.rateLimit(userID, callback);
   }
 
   /**
@@ -71,29 +68,36 @@ class RateLimiter {
    * @param {Function} callback
    */
 
-  rateLimit(userID, callback) {
+  async rateLimit(userID, callback) {
     const today = moment().tz(this.timezone).format('YYYY-MM-DD');
     const secondsKey = userID + this.rateLimiterNameSpace + '.seconds';
     const dailyKey = userID + this.rateLimiterNameSpace + '.daily.' + today;
-    this.redis.eval(luaScript, 2, secondsKey, dailyKey, this.intervalThreshold, this.allowedReqsPerInterval, this.allowedReqsPerDay, this.dailyTTL, (e, o) => {
-      if(e){
-        if(this.enableLogging){
-          console.log('Lua error in Rate Limiter: ', e);
-        }
-      }
-      else if (o > this.allowedReqsPerInterval) {
+    
+    try {
+      const o = await this.redis.eval(luaScript, {
+        keys: [ secondsKey, dailyKey ],
+        arguments: [ `${this.intervalThreshold}`, `${this.allowedReqsPerInterval}`, `${this.allowedReqsPerDay}`, `${this.dailyTTL}` ]
+      });
+
+      if (o > this.allowedReqsPerInterval) {
         if(this.enableLogging){
           console.log('Do Rate limiting,', o, 'requests in last', this.intervalThreshold, 'seconds')
         }
         setTimeout(() => {
           this.rateLimit(userID, callback);
         }, this.intervalThresholdMS)
-      } else if ( o == -1) {
-        callback(true);
       } else {
-        callback(false);
+        if(callback){
+          callback(o == -1);
+        } else {
+          return o == -1;  
+        }
       }
-    })
+    } catch (e) {
+      if(this.enableLogging){
+        console.log('Lua error in Rate Limiter: ', e);
+      }
+    }
   }
 }
 

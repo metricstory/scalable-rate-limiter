@@ -1,9 +1,17 @@
 const expect = require('chai').expect;
 const RateLimiter = require('../index.js');
-const redis = require('redis');
-const client = redis.createClient();
+const { createClient } = require('redis');
+const client = createClient();
 
 describe('RateLimiter', () => {
+  before(async () => {
+    await client.connect();
+  });
+
+  after(async () => {
+    await client.disconnect();
+  });
+
   describe('instantiation', () => {
     it('will produce the correct values', () => {
       const rl = new RateLimiter(client, true, 4, 2, '.rate.limit', 10)
